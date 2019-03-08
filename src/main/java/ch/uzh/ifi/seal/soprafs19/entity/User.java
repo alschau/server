@@ -20,7 +20,7 @@ public class User implements Serializable {
 
 	@Id
 	@GeneratedValue
-	private Long id;
+	private Long Id;
 	
 	@Column(nullable = false)
 	private String name;
@@ -37,7 +37,7 @@ public class User implements Serializable {
 	@Column(nullable = false)
 	private String creationDate;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private String birthday;
 
 	@Column(nullable = false)
@@ -45,11 +45,11 @@ public class User implements Serializable {
 
 
 	public Long getId() {
-		return id;
+		return Id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setId(Long Id) {
+		this.Id = Id;
 	}
 
 

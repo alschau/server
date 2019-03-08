@@ -23,49 +23,38 @@ public class UserController {
 
     @GetMapping("/users")
     Iterable<User> all() {
-        System.out.println("User werden gesucht!");
-        System.out.println(service.getUsers());
+        //System.out.println("User werden gesucht!");
+        //System.out.println(service.getUsers());
         return service.getUsers();
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/users/{userId}")
     //System.out.println("User mit dieser ID wird mit GetMapping gesucht");
     User one(
-            @PathVariable("id") Long id) {
-        try {
+            @PathVariable("userId") Long id) {
             return service.getUser(id);
-        } catch(Exception ex) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "User Not Found", ex);
-        }
+    }
+
+    @PostMapping("/login")
+        //mit token identifizieren
+    User login(@RequestBody User user) {
+        return this.service.login(user);
     }
 
     @PostMapping("/users")
             //System.out.println("User werden mit PostMapping gesucht");
     User createUser(@RequestBody User newUser) {
-        try {
             return this.service.createUser(newUser);
-        } catch (Exception ex) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT, "Username exists already", ex);
-        }
     }
 
-    @PutMapping("/users/{id}")
-            //System.out.println("User mit der ID wird geupdated");
-    User updateUser(@RequestBody User newUser, @PathVariable Long id) {
-        try {
-            if (service.getUser(id).getUsername() == newUser.getUsername()) {}
-            else {
-                service.getUser(id).setUsername(newUser.getUsername());
-            }
-            service.getUser(id).setStatus(newUser.getStatus());
-            service.getUser(id).setBirthday(newUser.getBirthday());
-            return service.getUser(id);
-        } catch (Exception ex) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "User Not Found", ex);
+    @PutMapping("/users/{userId}")
+    User replaceUser(@RequestBody User newUser, @PathVariable Long userId) {
+        if (service.getUser(userId).getUsername() == newUser.getUsername()) {}
+        else {
+            service.getUser(userId).setUsername(newUser.getUsername());
         }
+        service.getUser(userId).setBirthday(newUser.getBirthday());
+        return service.getUser(userId);
     }
 }
 
