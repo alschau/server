@@ -2,15 +2,11 @@ package ch.uzh.ifi.seal.soprafs19.entity;
 
 import ch.uzh.ifi.seal.soprafs19.constant.UserStatus;
 
+import javax.persistence.*;
 import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Entity
 public class User implements Serializable {
@@ -37,6 +33,7 @@ public class User implements Serializable {
 	@Column(nullable = false)
 	private String creationDate;
 
+	// Birthday must be nullable = true because we don't get the information before we login
 	@Column(nullable = true)
 	private String birthday;
 

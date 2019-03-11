@@ -3,7 +3,6 @@ package ch.uzh.ifi.seal.soprafs19.service;
 import ch.uzh.ifi.seal.soprafs19.constant.UserStatus;
 import ch.uzh.ifi.seal.soprafs19.entity.User;
 import ch.uzh.ifi.seal.soprafs19.repository.UserRepository;
-import ch.uzh.ifi.seal.soprafs19.exceptions.UserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +47,7 @@ public class UserService {
     public User login(User user) {
         User dbUser = userRepository.findByUsername(user.getUsername());
         if (dbUser.getPassword() == user.getPassword()) {
+            //dbUser.setStatus(UserStatus.ONLINE);
             return dbUser;
         } else {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Password does not match user passsword");
