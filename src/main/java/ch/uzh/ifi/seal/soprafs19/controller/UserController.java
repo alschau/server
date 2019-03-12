@@ -35,12 +35,16 @@ public class UserController {
 
     @PostMapping("/login")
     User login(@RequestBody User user) {
+        System.out.println("Logging in!");
         return this.service.login(user);
     }
 
 
     @PostMapping("/logout")
-    User logout(@RequestBody User user) {return this.service.logout(user);}
+    User logout(@RequestBody User user) {
+        System.out.println("Logging out!");
+        return this.service.logout(user);
+    }
 
 
     @PostMapping("/users")
