@@ -20,6 +20,12 @@ public class UserController {
         return service.getUsers();
     }
 
+    @GetMapping("/users/me")
+        //System.out.println("User mit dieser ID wird mit GetMapping gesucht");
+    User me(@RequestHeader("Access-Token") String token) {
+        return service.getUserByToken(token);
+    }
+
     @GetMapping("/users/{userId}")
     //System.out.println("User mit dieser ID wird mit GetMapping gesucht");
     User one(
@@ -28,10 +34,14 @@ public class UserController {
     }
 
     @PostMapping("/login")
-        //mit token identifizieren
     User login(@RequestBody User user) {
         return this.service.login(user);
     }
+
+
+    @PostMapping("/logout")
+    User logout(@RequestBody User user) {return this.service.logout(user);}
+
 
     @PostMapping("/users")
     User createUser(@RequestBody User newUser) {
