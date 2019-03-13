@@ -16,20 +16,16 @@ public class UserController {
     @GetMapping("/users")
     Iterable<User> all() {
         System.out.println("User werden gesucht!");
-        //System.out.println(service.getUsers());
         return service.getUsers();
     }
 
     @GetMapping("/users/me")
-        //System.out.println("User mit dieser ID wird mit GetMapping gesucht");
     User me(@RequestHeader("Access-Token") String token) {
         return service.getUserByToken(token);
     }
 
     @GetMapping("/users/{userId}")
-    //System.out.println("User mit dieser ID wird mit GetMapping gesucht");
-    User one(
-            @PathVariable("userId") Long id) {
+    User one(@PathVariable("userId") Long id) {
             return service.getUser(id);
     }
 
@@ -40,10 +36,10 @@ public class UserController {
     }
 
 
-    @PostMapping("/logout")
-    User logout(@RequestBody User user) {
+    @PostMapping("/logout/{userId}")
+    User logout(@PathVariable("userId") long id) {
         System.out.println("Logging out!");
-        return this.service.logout(user);
+        return this.service.logoutUser(id);
     }
 
 
@@ -52,8 +48,15 @@ public class UserController {
             return this.service.createUser(newUser);
     }
 
+    @CrossOrigin
     @PutMapping("/users/{userId}")
-    User replaceUser(@RequestBody User newUser, @PathVariable Long userId) {
+    User replaceUser(@RequestBody User newUser, @PathVariable long userId) {
+        User anUser = this.service.getUser(userId);
+        if (anUser != null){
+            return this.service.replaceUser(newUser, userId);
+        } else {
+            System.out.println("bitch lasagna");
+        }
         if (service.getUser(userId).getUsername() == newUser.getUsername()) { }
         else {
             service.getUser(userId).setUsername(newUser.getUsername());

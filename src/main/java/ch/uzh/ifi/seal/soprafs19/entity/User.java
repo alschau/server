@@ -108,7 +108,7 @@ public class User implements Serializable {
 
 	public void setCreationDate(){
 		Date now = new Date();
-		DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+		DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy - hh.mm");
 		String nowStr = dateFormat.format(now);
 		this.creationDate = nowStr;
 	}
