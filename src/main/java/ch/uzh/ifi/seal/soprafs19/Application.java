@@ -25,4 +25,4 @@ public class Application {
     }
 }
 
-//DA MUES ME ÖPPIS ÄNDERE  hk
+//DA MUES ME ÖPPIS ÄNDERE

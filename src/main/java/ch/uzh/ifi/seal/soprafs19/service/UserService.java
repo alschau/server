@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import ch.uzh.ifi.seal.soprafs19.exceptions.ExceptionLogin;
 
 import java.util.UUID;
 
@@ -37,23 +36,32 @@ public class UserService {
     }
 
     public User createUser(User newUser) {
-        newUser.setToken(UUID.randomUUID().toString());
-        newUser.setStatus(UserStatus.OFFLINE);
-        newUser.setCreationDate();
-        userRepository.save(newUser);
-        log.debug("Created Information for User: {}", newUser);
-        return newUser;
+        User dbUser = userRepository.findByUsername(newUser.getUsername());
+        System.out.println(dbUser);
+        if (dbUser != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username taken!");
+        } else {
+            newUser.setToken(UUID.randomUUID().toString());
+            newUser.setStatus(UserStatus.OFFLINE);
+            newUser.setCreationDate();
+            userRepository.save(newUser);
+            log.debug("Created Information for User: {}", newUser);
+            return newUser;
+        }
     }
 
     public User login(User user) {
         User dbUser = userRepository.findByUsername(user.getUsername());
-        if (dbUser.getPassword().equals(user.getPassword())) {
+        if (dbUser == null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,"Username doesn't exist!");
+        }
+        else if (dbUser.getPassword().equals(user.getPassword())) {
             dbUser.setStatus(UserStatus.ONLINE);
             System.out.println("logged in");
             dbUser = userRepository.save(dbUser);
             return dbUser;
         } else {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Password does not match user password");
+            throw new ResponseStatusException(HttpStatus.CONFLICT,"Password does not match user password");
         }
     }
 
@@ -66,27 +74,29 @@ public class UserService {
         return dbUser;
     }
 
-    public User replaceUser(User newUser, long userId){
-        User checkUser = this.userRepository.findByUsername(newUser.getUsername());
-        User anUser = getUser(userId);
-        if(checkUser!= null){
-            throw new ExceptionLogin();
+
+    public User replaceUser (long userId, User user){
+        User isUser = this.userRepository.findByUsername(user.getUsername());
+        if (isUser != null){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists");
+        } else {
+            User dbUser = getUser(userId);
+            if(dbUser.getUsername() != user.getUsername() && user.getUsername()!=null){
+                dbUser.setUsername(user.getUsername());
+            }
+            if (dbUser.getBirthday() != user.getBirthday() && user.getBirthday() != null){
+                dbUser.setBirthday(user.getBirthday());
+            }
+            userRepository.save(dbUser);
+            return dbUser;
         }
-        if(anUser.getUsername() != newUser.getUsername() && newUser.getUsername() != null){
-            anUser.setUsername(newUser.getUsername());
-        }
-        if(anUser.getBirthday() != newUser.getBirthday() && newUser.getBirthday() != null){
-            anUser.setBirthday(newUser.getBirthday());
-        }
-        userRepository.save(anUser); //what if not?
-        return anUser;
 
     }
 
     public User getUserByToken(String token) {
         User dbUser = userRepository.findByToken(token);
         if (dbUser == null) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"You are not logged in");
+            throw new ResponseStatusException(HttpStatus.CONFLICT,"You are not logged in");
         }
         return dbUser;
     }
